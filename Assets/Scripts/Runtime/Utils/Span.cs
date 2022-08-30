@@ -5,6 +5,7 @@ using Runtime.Extensions;
 using Unity.Collections.LowLevel.Unsafe;
 
 namespace Runtime.Utils {
+    [Obsolete("Not used")]
     public readonly ref struct Span<T> where T : unmanaged {
         internal readonly ByReference<T> _pointer;
         private readonly int _length;

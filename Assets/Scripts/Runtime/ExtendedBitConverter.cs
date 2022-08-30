@@ -1,4 +1,6 @@
-﻿using Runtime.Utils;
+﻿using System;
+using Runtime.Extensions;
+using Runtime.Utils;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
@@ -220,30 +222,24 @@ namespace Runtime {
 
 #region Utils
 
-        private static void SerializeDefault<T>(in T value, byte[] target, ref int offset, in int length) where T : struct {
-            var span = new Span<byte>(target, offset, length);
-            Write(in span, value);
-
+        private static void SerializeDefault<T>(in T value, byte[] target, ref int offset, in int length) {
+            unsafe {
+                fixed(void* ptr = target) {
+                    UnsafeUtility.WriteArrayElement(ptr, offset, value);
+                }
+            }
+            
             offset += length;
         }
 
-        private static void ReadDefault<T>(byte[] source, ref int offset, out T value, in int length) where T : struct {
-            var span = new Span<byte>(source, offset, length);
-            Read(in span, out value);
-
+        private static void ReadDefault<T>(byte[] source, ref int offset, out T value, in int length) {
+            unsafe {
+                fixed(void* ptr = source) {
+                    value = UnsafeUtility.ReadArrayElement<T>(ptr, offset);
+                }
+            }
+            
             offset += length;
-        }
-
-        private static void Write<T>(in Span<byte> span, in T value) where T : struct {
-            unsafe {
-                UnsafeUtility.WriteArrayElement(span._pointer.VoidValue, 0, value);
-            }
-        }
-
-        private static void Read<T>(in Span<byte> span, out T value) where T : struct {
-            unsafe {
-                value = UnsafeUtility.ReadArrayElement<T>(span._pointer.VoidValue, 0);
-            }
         }
 
 #endregion

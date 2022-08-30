@@ -10,6 +10,7 @@ namespace Runtime.Extensions {
             }
         }
         
+        [Obsolete("Not used")]
         internal static ref T GetRawSzArrayData<T>(this Array array) {
             return ref UnsafeUtility.As<byte, T>(ref UnsafeUtility.As<Array, RawSzArrayData> (ref array).Data);
         }
