@@ -114,7 +114,7 @@ namespace Runtime {
 
 #endregion
 
-#region Desetialize
+#region Deserialize
 
         /// <summary>
         /// Read value <paramref name="value"/> of type 'byte' from byte-array <paramref name="source"/> starting with <paramref name="offset"/> position
@@ -130,6 +130,23 @@ namespace Runtime {
         /// </summary>
         public static void Deserialize(this byte[] source, ref int offset, out bool value) {
             value = source[offset++] == TRUE_BYTE;
+        }
+        
+        /// <summary>
+        /// Read value <paramref name="value"/> of type 'sbyte' from byte-array <paramref name="source"/> starting with <paramref name="offset"/> position
+        /// <para>offset is increased with required size</para>
+        /// </summary>
+        public static void Deserialize(this byte[] source, ref int offset, out sbyte value) {
+            value = (sbyte)(source[offset++] + sbyte.MinValue);
+        }
+        
+        /// <summary>
+        /// Read value <paramref name="value"/> of type 'short' from byte-array <paramref name="source"/> starting with <paramref name="offset"/> position
+        /// <para>offset is increased with required size</para>
+        /// </summary>
+        public static void Deserialize(this byte[] source, ref int offset, out short value) {
+            const int lenght = sizeof(short);
+            ReadDefault(source, ref offset, out value, lenght);
         }
         
         /// <summary>

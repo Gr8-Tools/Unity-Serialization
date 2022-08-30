@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Runtime.Extensions;
 using Unity.Collections.LowLevel.Unsafe;
 
@@ -43,12 +44,15 @@ namespace Runtime.Utils {
                 throw new ArgumentOutOfRangeException(nameof(array));
 #endif
 
-            unsafe {
-                void* ptr;
-                UnsafeUtility.CopyObjectAddressToPtr(array, &ptr);
-                
-                _pointer = new ByReference<T>((IntPtr)ptr + start * sizeof(T));
-            }
+            // unsafe {
+            //     void* ptr;
+            //     UnsafeUtility.CopyObjectAddressToPtr(array, &ptr);
+            //     
+            //     _pointer = new ByReference<T>((IntPtr)ptr + start * sizeof(T));
+            // }
+
+            //_pointer = new ByReference<T>(ref array.GetRawSzArrayData<T>());
+            _pointer = new ByReference<T>(Marshal.UnsafeAddrOfPinnedArrayElement(array, start));
             _length = length;
         }
         
