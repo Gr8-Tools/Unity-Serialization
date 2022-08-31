@@ -103,16 +103,14 @@ namespace Runtime {
             SerializeDefault(in value.z, target, ref offset, length);
         }
         
-        // /// <summary>
-        // /// Write value <paramref name="value"/> of type 'Guid' into byte-array <paramref name="target"/> starting with <paramref name="offset"/> position
-        // /// <para>offset is increased with required size</para>
-        // /// </summary>
-        // public static void Serialize(in Guid value, byte[] target, ref int offset) {
-        //     const int length = 16;
-        //     var span = new Span<byte>(target, offset, length);
-        //     
-        //     value.ToByteArray()
-        // }
+        /// <summary>
+        /// Write value <paramref name="value"/> of type 'Guid' into byte-array <paramref name="target"/> starting with <paramref name="offset"/> position
+        /// <para>offset is increased with required size</para>
+        /// </summary>
+        public static void Serialize(in Guid value, byte[] target, ref int offset) {
+            const int length = 16;
+            SerializeDefault(in value, target, ref offset, length);
+        }
 
 #endregion
 
@@ -215,7 +213,15 @@ namespace Runtime {
             value = new Vector3(xValue, yValue, zValue);
         }
 
-
+        /// <summary>
+        /// Read value <paramref name="value"/> of type 'Guid' from byte-array <paramref name="source"/> starting with <paramref name="offset"/> position
+        /// <para>offset is increased with required size</para>
+        /// </summary>
+        public static void Deserialize(this byte[] source, ref int offset, out Guid value) {
+            const int lenght = sizeof(float);
+            ReadDefault(source, ref offset, out value, lenght);
+        }
+        
 #endregion
 
 
@@ -225,7 +231,8 @@ namespace Runtime {
         private static void SerializeDefault<T>(in T value, byte[] target, ref int offset, in int length) {
             unsafe {
                 fixed(void* ptr = target) {
-                    UnsafeUtility.WriteArrayElement(ptr, offset, value);
+                    void* writePtr = UnsafeUtilityExtensions.OffsetPtr<byte>(ptr, offset);
+                    UnsafeUtility.WriteArrayElement(writePtr, 0, value);
                 }
             }
             
@@ -235,7 +242,8 @@ namespace Runtime {
         private static void ReadDefault<T>(byte[] source, ref int offset, out T value, in int length) {
             unsafe {
                 fixed(void* ptr = source) {
-                    value = UnsafeUtility.ReadArrayElement<T>(ptr, offset);
+                    void* readPtr = UnsafeUtilityExtensions.OffsetPtr<byte>(ptr, offset);
+                    value = UnsafeUtility.ReadArrayElement<T>(readPtr, 0);
                 }
             }
             

@@ -78,6 +78,7 @@ namespace Runtime.Utils {
                 if ((uint)index >= (uint)_length) {
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
+
                 return ref UnsafeUtilityExtensions.OffsetRef<T>(_pointer.IntPtrValue, index);
             }
 #endif
