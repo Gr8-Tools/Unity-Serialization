@@ -6,7 +6,6 @@ namespace Runtime {
     public static class ExtendedBitConverter{
         private const byte FALSE_BYTE = 0; 
         private const byte TRUE_BYTE = 1;
-        private const int SIZE_OF_BYTE = 8;
 
 #region Serialize
 
@@ -144,7 +143,7 @@ namespace Runtime {
         /// </summary>
         public static void Deserialize(this byte[] source, ref int offset, out short value) {
             const int lenght = sizeof(short);
-            ReadDefault(source, ref offset, out value, lenght);
+            DeserializeDefault(source, ref offset, out value, lenght);
         }
         
         /// <summary>
@@ -153,7 +152,7 @@ namespace Runtime {
         /// </summary>
         public static void Deserialize(this byte[] source, ref int offset, out int value) {
             const int lenght = sizeof(int);
-            ReadDefault(source, ref offset, out value, lenght);
+            DeserializeDefault(source, ref offset, out value, lenght);
         }
         
         /// <summary>
@@ -162,7 +161,7 @@ namespace Runtime {
         /// </summary>
         public static void Deserialize(this byte[] source, ref int offset, out float value) {
             const int lenght = sizeof(float);
-            ReadDefault(source, ref offset, out value, lenght);
+            DeserializeDefault(source, ref offset, out value, lenght);
         }
         
         /// <summary>
@@ -171,7 +170,7 @@ namespace Runtime {
         /// </summary>
         public static void Deserialize(this byte[] source, ref int offset, out double value) {
             const int lenght = sizeof(double);
-            ReadDefault(source, ref offset, out value, lenght);
+            DeserializeDefault(source, ref offset, out value, lenght);
         }
         
         /// <summary>
@@ -180,8 +179,8 @@ namespace Runtime {
         /// </summary>
         public static void Deserialize(this byte[] source, ref int offset, out Vector2 value) {
             const int lenght = sizeof(float);
-            ReadDefault(source, ref offset, out float xValue, lenght);
-            ReadDefault(source, ref offset, out float yValue, lenght);
+            DeserializeDefault(source, ref offset, out float xValue, lenght);
+            DeserializeDefault(source, ref offset, out float yValue, lenght);
 
             value = new Vector2(xValue, yValue);
         }
@@ -192,8 +191,8 @@ namespace Runtime {
         /// </summary>
         public static void Deserialize(this byte[] source, ref int offset, out Vector2Int value) {
             const int lenght = sizeof(float);
-            ReadDefault(source, ref offset, out int xValue, lenght);
-            ReadDefault(source, ref offset, out int yValue, lenght);
+            DeserializeDefault(source, ref offset, out int xValue, lenght);
+            DeserializeDefault(source, ref offset, out int yValue, lenght);
 
             value = new Vector2Int(xValue, yValue);
         }
@@ -204,9 +203,9 @@ namespace Runtime {
         /// </summary>
         public static void Deserialize(this byte[] source, ref int offset, out Vector3 value) {
             const int lenght = sizeof(float);
-            ReadDefault(source, ref offset, out float xValue, lenght);
-            ReadDefault(source, ref offset, out float yValue, lenght);
-            ReadDefault(source, ref offset, out float zValue, lenght);
+            DeserializeDefault(source, ref offset, out float xValue, lenght);
+            DeserializeDefault(source, ref offset, out float yValue, lenght);
+            DeserializeDefault(source, ref offset, out float zValue, lenght);
 
             value = new Vector3(xValue, yValue, zValue);
         }
@@ -217,7 +216,7 @@ namespace Runtime {
         /// </summary>
         public static void Deserialize(this byte[] source, ref int offset, out Guid value) {
             const int lenght = sizeof(float);
-            ReadDefault(source, ref offset, out value, lenght);
+            DeserializeDefault(source, ref offset, out value, lenght);
         }
         
 #endregion
@@ -226,26 +225,58 @@ namespace Runtime {
 
 #region Utils
 
-        private static void SerializeDefault<T>(in T value, byte[] target, ref int offset, in int length) where T : unmanaged {
+        public static void SerializeDefault<T>(in T value, byte[] target, ref int offset, int length = 0) where T : unmanaged {
+            if (length == 0) {
+                unsafe {
+                    length = sizeof(T);
+                }
+
+                if (length + offset > target.Length) {
+                    throw new ArgumentOutOfRangeException(nameof(target),
+                                                          $"Invalid size of buffer: require {length} bytes starting from {offset} index, but length is only '{target.Length}'");
+                }
+            }
+            
+            var arraySegment = new ArraySegment<byte>(target, offset, length);
+            SerializeDefault(in value, in arraySegment, ref offset);
+        }
+        
+        public static void SerializeDefault<T>(in T value, in ArraySegment<byte> target, ref int offset) where T : unmanaged {
             unsafe {
-                fixed(void* ptr = target) {
-                    void* writePtr = UnsafeUtilityExtensions.OffsetPtr<byte>(ptr, offset);
+                fixed(void* ptr = target.Array) {
+                    void* writePtr = UnsafeUtilityExtensions.OffsetPtr<byte>(ptr, target.Offset);
                     *(T*)writePtr = value;
                 }
             }
             
-            offset += length;
+            offset += target.Count;
         }
 
-        private static void ReadDefault<T>(byte[] source, ref int offset, out T value, in int length) where T : unmanaged {
+        public static void DeserializeDefault<T>(byte[] source, ref int offset, out T value, int length = 0) where T : unmanaged {
+            if (length == 0) {
+                unsafe {
+                    length = sizeof(T);
+                }
+
+                if (length + offset > source.Length) {
+                    throw new ArgumentOutOfRangeException(nameof(source),
+                                                          $"Invalid size of buffer: require {length} bytes starting from {offset} index, but length is only '{source.Length}'");
+                }
+            }
+            
+            var arraySegment = new ArraySegment<byte>(source, offset, length);
+            DeserializeDefault(in arraySegment, ref offset, out value);
+        }
+        
+        public static void DeserializeDefault<T>(in ArraySegment<byte> source, ref int offset, out T value) where T : unmanaged {
             unsafe {
-                fixed(void* ptr = source) {
-                    void* readPtr = UnsafeUtilityExtensions.OffsetPtr<byte>(ptr, offset);
+                fixed(void* ptr = source.Array) {
+                    void* readPtr = UnsafeUtilityExtensions.OffsetPtr<byte>(ptr, source.Offset);
                     value = *(T*)readPtr;
                 }
             }
             
-            offset += length;
+            offset += source.Count;
         }
 
 #endregion
