@@ -1,7 +1,5 @@
 ﻿using System;
 using Runtime.Extensions;
-using Runtime.Utils;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace Runtime {
@@ -228,22 +226,22 @@ namespace Runtime {
 
 #region Utils
 
-        private static void SerializeDefault<T>(in T value, byte[] target, ref int offset, in int length) {
+        private static void SerializeDefault<T>(in T value, byte[] target, ref int offset, in int length) where T : unmanaged {
             unsafe {
                 fixed(void* ptr = target) {
                     void* writePtr = UnsafeUtilityExtensions.OffsetPtr<byte>(ptr, offset);
-                    UnsafeUtility.WriteArrayElement(writePtr, 0, value);
+                    *(T*)writePtr = value;
                 }
             }
             
             offset += length;
         }
 
-        private static void ReadDefault<T>(byte[] source, ref int offset, out T value, in int length) {
+        private static void ReadDefault<T>(byte[] source, ref int offset, out T value, in int length) where T : unmanaged {
             unsafe {
                 fixed(void* ptr = source) {
                     void* readPtr = UnsafeUtilityExtensions.OffsetPtr<byte>(ptr, offset);
-                    value = UnsafeUtility.ReadArrayElement<T>(readPtr, 0);
+                    value = *(T*)readPtr;
                 }
             }
             
