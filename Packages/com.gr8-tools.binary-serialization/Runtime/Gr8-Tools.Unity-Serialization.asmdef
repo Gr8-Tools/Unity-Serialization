@@ -1,5 +1,5 @@
 {
-    "name": "Gr8-Tools.Unity-Serialization",
+    "name": "gr8-tools.binary-serialization",
     "rootNamespace": "",
     "references": [],
     "includePlatforms": [

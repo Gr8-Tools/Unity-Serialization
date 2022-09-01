@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.gr8-tools.binary-serialization": {
-      "version": "file:Unity-Serialization",
+      "version": "file:com.gr8-tools.binary-serialization",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
