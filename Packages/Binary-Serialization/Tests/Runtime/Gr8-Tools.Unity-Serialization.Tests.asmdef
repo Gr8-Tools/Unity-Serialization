@@ -4,7 +4,7 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "gr8-tools.binary-serialization"
+        "Gr8-Tools.Binary-Serialization"
     ],
     "includePlatforms": [
         "Android",

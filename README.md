@@ -1,5 +1,7 @@
-# Unity-Serialization
+# Unity Binary Serialization
 
-This Package contains tools that help serialize and deserialize data of different type to/from byte-array (`byte[]`) with zero memory allocation.
+This Package contains tools that help serialize and dserialize data of different type to/from byte-array (`byte[]`) or `ArraySegment` with zero memory allocation.
 
-Developed on a version of unity #2020.3. You can add https://github.com/Gr8-Tools/com.gr8-tools.binary-serialization.git?path=Packages/Unity-Serialization to Package Manager
+This realisation is based on unsafe methods like read/write values with array-pointers on memory.
+
+Developed on a version of unity #2020.3. You can add `https://github.com/Gr8-Tools/Unity-Serialization.git?path=Packages/Binary-Serialization` to Package Manager
