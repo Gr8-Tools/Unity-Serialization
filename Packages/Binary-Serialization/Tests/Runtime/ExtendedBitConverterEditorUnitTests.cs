@@ -1,6 +1,6 @@
 using System;
+using BinarySerialization;
 using NUnit.Framework;
-using Runtime;
 using Tests.Runtime.Utils.Loggers;
 using Tests.Runtime.Utils.Loggers.Utils;
 using UnityEngine;

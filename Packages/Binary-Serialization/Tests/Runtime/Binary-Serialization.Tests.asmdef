@@ -1,16 +1,19 @@
 {
-    "name": "Gr8-Tools.Unity-Serialization.Tests",
-    "rootNamespace": "",
+    "name": "Binary-Serialization.Tests",
+    "rootNamespace": "Binary-Serialization.Tests",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Gr8-Tools.Binary-Serialization"
+        "Binary-Serialization"
     ],
     "includePlatforms": [
         "Android",
         "Editor",
         "iOS",
+        "LinuxStandalone64",
         "macOSStandalone",
+        "PS4",
+        "Switch",
         "WSA",
         "WindowsStandalone32",
         "WindowsStandalone64"
@@ -21,7 +24,7 @@
     "precompiledReferences": [
         "nunit.framework.dll"
     ],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
     ],
