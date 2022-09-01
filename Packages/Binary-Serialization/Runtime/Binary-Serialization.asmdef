@@ -1,6 +1,6 @@
 {
-    "name": "Gr8-Tools.Binary-Serialization",
-    "rootNamespace": "",
+    "name": "Binary-Serialization",
+    "rootNamespace": "BinarySerialization",
     "references": [],
     "includePlatforms": [
         "Android",

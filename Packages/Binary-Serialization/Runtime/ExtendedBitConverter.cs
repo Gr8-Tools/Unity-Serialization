@@ -1,8 +1,8 @@
 ﻿using System;
-using Runtime.Extensions;
+using BinarySerialization.Extensions;
 using UnityEngine;
 
-namespace Runtime {
+namespace BinarySerialization {
     public static class ExtendedBitConverter{
         private const byte FALSE_BYTE = 0; 
         private const byte TRUE_BYTE = 1;

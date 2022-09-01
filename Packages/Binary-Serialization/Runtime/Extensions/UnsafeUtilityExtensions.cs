@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Runtime.Extensions {
+namespace BinarySerialization.Extensions {
     internal static class UnsafeUtilityExtensions {
         
         internal static unsafe void* OffsetPtr<T>(IntPtr ptr, int offset) where T : unmanaged {
