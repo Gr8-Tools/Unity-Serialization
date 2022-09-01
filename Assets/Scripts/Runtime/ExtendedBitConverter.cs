@@ -225,22 +225,40 @@ namespace Runtime {
 
 #region Utils
 
+        /// <summary>
+        /// Write value <paramref name="value"/> of any unmanaged type to <see cref="byte"/>-array <paramref name="target"/> starting with <paramref name="offset"/>
+        /// <para><paramref name="offset"/> will be increased with required size</para>
+        /// </summary>
+        /// <param name="value">Write value</param>
+        /// <param name="target">Target byte-destination</param>
+        /// <param name="offset">Start write position. Will be increased on <paramref name="length"/></param>
+        /// <param name="length">The required bytes count to write value <paramref name="value"/> in <paramref name="target"/></param>
+        /// <typeparam name="T">Unmanaged type of <paramref name="value"/></typeparam>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown, if one or any last bytes of <paramref name="value"/> can't be written in <paramref name="target"/></exception>
         public static void SerializeDefault<T>(in T value, byte[] target, ref int offset, int length = 0) where T : unmanaged {
             if (length == 0) {
                 unsafe {
                     length = sizeof(T);
                 }
-
-                if (length + offset > target.Length) {
-                    throw new ArgumentOutOfRangeException(nameof(target),
-                                                          $"Invalid size of buffer: require {length} bytes starting from {offset} index, but length is only '{target.Length}'");
-                }
+            }
+            
+            if (length + offset > target.Length) {
+                throw new ArgumentOutOfRangeException(nameof(target),
+                                                      $"Invalid size of buffer: require {length} bytes starting from {offset} index, but length is only '{target.Length}'");
             }
             
             var arraySegment = new ArraySegment<byte>(target, offset, length);
             SerializeDefault(in value, in arraySegment, ref offset);
         }
         
+        /// <summary>
+        /// Write value <paramref name="value"/> of any unmanaged type to <seealso cref="ArraySegment{T}"/><paramref name="target"/>
+        /// <para> <paramref name="offset"/> will be increased with required size of <see cref="ArraySegment{T}.Count"/></para>
+        /// </summary>
+        /// <param name="value">Write value</param>
+        /// <param name="target">Target <see cref="ArraySegment{T}"/></param>
+        /// <param name="offset">Will be increased on <see cref="ArraySegment{T}.Count"/></param>
+        /// <typeparam name="T">Unmanaged type of <paramref name="value"/></typeparam>
         public static void SerializeDefault<T>(in T value, in ArraySegment<byte> target, ref int offset) where T : unmanaged {
             unsafe {
                 fixed(void* ptr = target.Array) {
@@ -252,22 +270,40 @@ namespace Runtime {
             offset += target.Count;
         }
 
+        /// <summary>
+        /// Read value <paramref name="value"/> of any unmanaged type from <see cref="byte"/>-array <paramref name="source"/> starting with <paramref name="offset"/>
+        /// <para>offset will be increased with required size</para>
+        /// </summary>
+        /// <param name="value">Read value</param>
+        /// <param name="source">Source byte-destination</param>
+        /// <param name="offset">Start read position. Will be increased on <paramref name="length"/></param>
+        /// <param name="length">The required bytes count to read value <paramref name="value"/> from <paramref name="source"/></param>
+        /// <typeparam name="T">Unmanaged type of <paramref name="value"/></typeparam>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown, if one or any last bytes of <paramref name="value"/> can't be read from<paramref name="source"/></exception>
         public static void DeserializeDefault<T>(byte[] source, ref int offset, out T value, int length = 0) where T : unmanaged {
             if (length == 0) {
                 unsafe {
                     length = sizeof(T);
                 }
-
-                if (length + offset > source.Length) {
-                    throw new ArgumentOutOfRangeException(nameof(source),
-                                                          $"Invalid size of buffer: require {length} bytes starting from {offset} index, but length is only '{source.Length}'");
-                }
+            }
+            
+            if (length + offset > source.Length) {
+                throw new ArgumentOutOfRangeException(nameof(source),
+                                                      $"Invalid size of buffer: require {length} bytes starting from {offset} index, but length is only '{source.Length}'");
             }
             
             var arraySegment = new ArraySegment<byte>(source, offset, length);
             DeserializeDefault(in arraySegment, ref offset, out value);
         }
         
+        /// <summary>
+        /// Read value <paramref name="value"/> of any unmanaged type from <see cref="ArraySegment{T}"/><paramref name="source"/>
+        /// <para> <paramref name="offset"/> will be increased with required size of <see cref="ArraySegment{T}.Count"/></para>
+        /// </summary>
+        /// <param name="value">Read value</param>
+        /// <param name="source">Source <see cref="ArraySegment{T}"/></param>
+        /// <param name="offset">Will be increased on <see cref="ArraySegment{T}.Count"/></param>
+        /// <typeparam name="T">Unmanaged type of <paramref name="value"/></typeparam>
         public static void DeserializeDefault<T>(in ArraySegment<byte> source, ref int offset, out T value) where T : unmanaged {
             unsafe {
                 fixed(void* ptr = source.Array) {
