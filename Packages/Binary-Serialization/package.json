@@ -5,7 +5,7 @@
     "name": "Gr8-Tools"
   },
   "version": "1.0.1",
-  "unity": "2020.1",
+  "unity": "2020.3",
   "description": "Provide tools to serialize/deserialize data of different types to/from byte-array with zero memory allocation.",
   "keywords": [
     "serialize/deserialize",
@@ -13,5 +13,5 @@
     "serialize",
     "zero memory allocation"
   ],
-  "type": "library"
+  "unityRelease": "0f1"
 }

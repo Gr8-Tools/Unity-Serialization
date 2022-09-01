@@ -2,16 +2,7 @@
     "name": "Binary-Serialization",
     "rootNamespace": "BinarySerialization",
     "references": [],
-    "includePlatforms": [
-        "Android",
-        "Editor",
-        "iOS",
-        "macOSStandalone",
-        "Switch",
-        "WSA",
-        "WindowsStandalone32",
-        "WindowsStandalone64"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
     "overrideReferences": false,
