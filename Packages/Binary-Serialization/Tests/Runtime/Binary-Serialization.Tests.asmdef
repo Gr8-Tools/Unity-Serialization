@@ -6,18 +6,7 @@
         "UnityEditor.TestRunner",
         "Binary-Serialization"
     ],
-    "includePlatforms": [
-        "Android",
-        "Editor",
-        "iOS",
-        "LinuxStandalone64",
-        "macOSStandalone",
-        "PS4",
-        "Switch",
-        "WSA",
-        "WindowsStandalone32",
-        "WindowsStandalone64"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
     "overrideReferences": true,
