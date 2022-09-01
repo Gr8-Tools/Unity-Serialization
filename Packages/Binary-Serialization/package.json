@@ -1,10 +1,10 @@
 {
   "name": "com.gr8-tools.binary-serialization",
-  "displayName": "Binary Serialization",
+  "displayName": "Binary-Serialization",
   "author": {
     "name": "Gr8-Tools"
   },
-  "version": "0.0.2",
+  "version": "1.0.0",
   "unity": "2020.3",
   "description": "Provide tools to serialize/deserialize data of different types to/from byte-array with zero memory allocation.",
   "keywords": [
