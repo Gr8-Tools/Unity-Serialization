@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using BinarySerialization;
 using NUnit.Framework;
 using Tests.Runtime.Utils.Loggers;
@@ -34,15 +35,15 @@ namespace Tests.Runtime {
             byte[] buffer = new byte[3];
 
             offset = 0;
-            ExtendedBitConverter.Serialize(in byteValue, buffer, ref offset);
-            ExtendedBitConverter.Serialize(in boolValue, buffer, ref offset);
-            ExtendedBitConverter.Serialize(in sbyteValue, buffer, ref offset);
+            ExtendedBitConverter.SerializeDefault(in byteValue, buffer, ref offset);
+            ExtendedBitConverter.SerializeDefault(in boolValue, buffer, ref offset);
+            ExtendedBitConverter.SerializeDefault(in sbyteValue, buffer, ref offset);
             SerializationLogger.Log($"[{nameof(SimpleConversions)}]: Serialized info: [{string.Join(";", buffer)}]");
 
             offset = 0;
-            buffer.Deserialize(ref offset, out byte newByteValue);
-            buffer.Deserialize(ref offset, out bool newBoolValue);
-            buffer.Deserialize(ref offset, out sbyte newSbyteValue);
+            ExtendedBitConverter.DeserializeDefault(buffer, ref offset, out byte newByteValue);
+            ExtendedBitConverter.DeserializeDefault(buffer, ref offset, out bool newBoolValue);
+            ExtendedBitConverter.DeserializeDefault(buffer, ref offset, out sbyte newSbyteValue);
 
             SerializationLogger.Log(
                 $"[{nameof(SimpleConversions)}]: Deserialized: [{newByteValue};{newBoolValue};{newSbyteValue}]");
@@ -83,22 +84,22 @@ namespace Tests.Runtime {
 
             offset = 0;
             SerializationLogger.LogAttempt(new LogAttemptArgs {
-                Action = () => ExtendedBitConverter.Serialize(in shortValue, buffer, ref offset),
+                Action = () => ExtendedBitConverter.SerializeDefault(in shortValue, buffer, ref offset),
                 SuccessMsgCall = () => InternalSuccessSerializeLog(shortValue),
                 FailMsgCall = ex => InternalFailSerializeLog(shortValue, ex)
             });
             SerializationLogger.LogAttempt(new LogAttemptArgs {
-                Action = () => ExtendedBitConverter.Serialize(in intValue, buffer, ref offset),
+                Action = () => ExtendedBitConverter.SerializeDefault(in intValue, buffer, ref offset),
                 SuccessMsgCall = () => InternalSuccessSerializeLog(intValue),
                 FailMsgCall = ex => InternalFailSerializeLog(intValue, ex)
             });
             SerializationLogger.LogAttempt(new LogAttemptArgs {
-                Action = () => ExtendedBitConverter.Serialize(in floatValue, buffer, ref offset),
+                Action = () => ExtendedBitConverter.SerializeDefault(in floatValue, buffer, ref offset),
                 SuccessMsgCall = () => InternalSuccessSerializeLog(floatValue),
                 FailMsgCall = ex => InternalFailSerializeLog(floatValue, ex)
             });
             SerializationLogger.LogAttempt(new LogAttemptArgs {
-                Action = () => ExtendedBitConverter.Serialize(in doubleValue, buffer, ref offset),
+                Action = () => ExtendedBitConverter.SerializeDefault(in doubleValue, buffer, ref offset),
                 SuccessMsgCall = () => InternalSuccessSerializeLog(doubleValue),
                 FailMsgCall = ex => InternalFailSerializeLog(doubleValue, ex)
             });
@@ -117,22 +118,22 @@ namespace Tests.Runtime {
             float newFloatValue = default;
             double newDoubleValue = default;
             SerializationLogger.LogAttempt(new LogAttemptArgs {
-                Action = () => buffer.Deserialize(ref offset, out newShortValue),
+                Action = () => ExtendedBitConverter.DeserializeDefault(buffer, ref offset, out newShortValue),
                 SuccessMsgCall = () => InternalSuccessDeserializeLog(newShortValue),
                 FailMsgCall = ex => InternalFailDeserializeLog(newShortValue, ex)
             });
             SerializationLogger.LogAttempt(new LogAttemptArgs {
-                Action = () => buffer.Deserialize(ref offset, out newIntValue),
+                Action = () => ExtendedBitConverter.DeserializeDefault(buffer, ref offset, out newIntValue),
                 SuccessMsgCall = () => InternalSuccessDeserializeLog(newIntValue),
                 FailMsgCall = ex => InternalFailDeserializeLog(newIntValue, ex)
             });
             SerializationLogger.LogAttempt(new LogAttemptArgs {
-                Action = () => buffer.Deserialize(ref offset, out newFloatValue),
+                Action = () => ExtendedBitConverter.DeserializeDefault(buffer, ref offset, out newFloatValue),
                 SuccessMsgCall = () => InternalSuccessDeserializeLog(newFloatValue),
                 FailMsgCall = ex => InternalFailDeserializeLog(newFloatValue, ex)
             });
             SerializationLogger.LogAttempt(new LogAttemptArgs {
-                Action = () => buffer.Deserialize(ref offset, out newDoubleValue),
+                Action = () => ExtendedBitConverter.DeserializeDefault(buffer, ref offset, out newDoubleValue),
                 SuccessMsgCall = () => InternalSuccessDeserializeLog(newDoubleValue),
                 FailMsgCall = ex => InternalFailDeserializeLog(newDoubleValue, ex)
             });
@@ -152,8 +153,7 @@ namespace Tests.Runtime {
                             newDoubleValue,
                             $"Received 'double'-value '{newDoubleValue}' != '{doubleValue}'");
 
-            SerializationLogger.Log(
-                $"[{nameof(BigSystemTypeConversions)}]: Test finished ----------------------------------");
+            SerializationLogger.Log($"[{nameof(BigSystemTypeConversions)}]: Test finished ----------------------------------");
         }
 
         [Test]
@@ -165,17 +165,17 @@ namespace Tests.Runtime {
                 byte[] buffer = new byte[8 + 8 + 12];
 
                 offset = 0;
-                ExtendedBitConverter.Serialize(in vector2, buffer, ref offset);
-                ExtendedBitConverter.Serialize(in vector2Int, buffer, ref offset);
-                ExtendedBitConverter.Serialize(in vector3, buffer, ref offset);
+                ExtendedBitConverter.SerializeDefault(in vector2, buffer, ref offset);
+                ExtendedBitConverter.SerializeDefault(in vector2Int, buffer, ref offset);
+                ExtendedBitConverter.SerializeDefault(in vector3, buffer, ref offset);
 
                 SerializationLogger.Log(
                     $"[{nameof(UnityTypeConversions)}]: Serialized info: [{string.Join(";", buffer)}]");
 
                 offset = 0;
-                buffer.Deserialize(ref offset, out Vector2 newVector2);
-                buffer.Deserialize(ref offset, out Vector2Int newVector2Int);
-                buffer.Deserialize(ref offset, out Vector3 newVector3);
+                ExtendedBitConverter.DeserializeDefault(buffer, ref offset, out Vector2 newVector2);
+                ExtendedBitConverter.DeserializeDefault(buffer, ref offset, out Vector2Int newVector2Int);
+                ExtendedBitConverter.DeserializeDefault(buffer, ref offset, out Vector3 newVector3);
 
                 Assert.AreEqual(vector2, newVector2, $"Received 'Vector2'-value '{newVector2}' != '{vector2}'");
                 Assert.AreEqual(vector2Int, newVector2Int, $"Received 'Vector2Int'-value '{newVector2Int}' != '{vector2Int}'");
@@ -197,18 +197,39 @@ namespace Tests.Runtime {
                 byte[] buffer = new byte[16];
 
                 offset = 0;
-                ExtendedBitConverter.Serialize(in initialGuid, buffer, ref offset);
+                ExtendedBitConverter.SerializeDefault(in initialGuid, buffer, ref offset);
 
                 SerializationLogger.Log($"[{nameof(GuidConversion)}]: Serialized info: [{string.Join(";", buffer)}]");
 
                 offset = 0;
-                buffer.Deserialize(ref offset, out Guid newGuid);
+                ExtendedBitConverter.DeserializeDefault(buffer, ref offset, out Guid newGuid);
 
                 Assert.AreEqual(initialGuid, newGuid, $"Received 'Guid'-value '{newGuid}' != '{initialGuid}'");
             }
 
             GuidConversionInternal(Guid.Empty);
             GuidConversionInternal(Guid.NewGuid());
+        }
+
+        [TestCase("123456789o0p-[=!@#$%^&*()_+qwertyuiop[]QWERTYUIOP{}asdfghjkl;'\\ASDFGHJKL:|zxcvbnm,./|ZXCVBNM<>?")]
+        [TestCase("йцукенгшщзхъфывапролджэ\\ячсмитьбю.ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭ//ЯЧСМИТЬБЮ,")]
+        public void StringConversion(string value) {
+            SerializationLogger.Log($"[{nameof(StringConversion)}]: Prepare serialize info: [{value}]");
+            
+            int offset;
+            byte[] buffer = new byte[Encoding.UTF8.GetByteCount(value)];
+
+            offset = 0;
+            ExtendedBitConverter.Serialize(in value, buffer, ref offset);
+            SerializationLogger.Log($"[{nameof(StringConversion)}]: Serialized info: [{string.Join(";", buffer)}]");
+
+            offset = 0;
+            buffer.Deserialize(ref offset, out string newValue);
+            SerializationLogger.Log($"[{nameof(BigSystemTypeConversions)}]: Deserialized: [{newValue}]");
+
+            Assert.AreEqual(value, newValue, $"Received 'string'-value '{newValue}' != '{value}'");
+            
+            SerializationLogger.Log($"[{nameof(BigSystemTypeConversions)}]: Test finished ----------------------------------");
         }
         
         [TestCase(byte.MinValue, false, sbyte.MinValue, short.MinValue, int.MinValue, float.MinValue, double.MinValue)]
