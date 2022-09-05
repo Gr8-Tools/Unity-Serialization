@@ -225,11 +225,51 @@ namespace Tests.Runtime {
 
             offset = 0;
             buffer.Deserialize(ref offset, out string newValue);
-            SerializationLogger.Log($"[{nameof(BigSystemTypeConversions)}]: Deserialized: [{newValue}]");
+            SerializationLogger.Log($"[{nameof(StringConversion)}]: Deserialized: [{newValue}]");
 
             Assert.AreEqual(value, newValue, $"Received 'string'-value '{newValue}' != '{value}'");
             
-            SerializationLogger.Log($"[{nameof(BigSystemTypeConversions)}]: Test finished ----------------------------------");
+            SerializationLogger.Log($"[{nameof(StringConversion)}]: Test finished ----------------------------------");
+        }
+        
+        [Test]
+        public void ColorConversion() {
+            void ColorConversionInternal(Color value, bool strictEqual = true) {
+                SerializationLogger.Log($"[{nameof(ColorConversion)}]: Prepare serialize info: [{value}]");
+
+                const int length = 4;
+                int offset;
+                byte[] buffer = new byte[length];
+
+                offset = 0;
+                ExtendedBitConverter.Serialize(in value, buffer, ref offset);
+                SerializationLogger.Log($"[{nameof(ColorConversion)}]: Serialized info: [{string.Join(";", buffer)}]");
+
+                offset = 0;
+                buffer.Deserialize(ref offset, out Color newValue);
+                SerializationLogger.Log($"[{nameof(ColorConversion)}]: Deserialized: [{newValue}]");
+
+                if(strictEqual) {
+                    Assert.AreEqual(value, newValue, $"Received 'Color'-value '{newValue}' != '{value}'");
+                } else {
+                    for (int i = 0; i < length; i++) {
+                        Assert.LessOrEqual(Mathf.Abs(newValue[i] - value[i]), 0.002f);
+                    }
+                }
+            
+                SerializationLogger.Log($"[{nameof(ColorConversion)}]: Test finished ----------------------------------");
+            }
+            
+            ColorConversionInternal(Color.black);
+            ColorConversionInternal(Color.red);
+            ColorConversionInternal(Color.green);
+            ColorConversionInternal(Color.blue); 
+            ColorConversionInternal(Color.white); 
+            ColorConversionInternal(Color.grey, false); 
+            ColorConversionInternal(Color.cyan, false); 
+            ColorConversionInternal(Color.magenta, false); 
+            ColorConversionInternal(Color.yellow, false); 
+            ColorConversionInternal(new Color(0.005f, 0.015f, 0.125f, 0.995f), false); 
         }
         
         [TestCase(byte.MinValue, false, sbyte.MinValue, short.MinValue, int.MinValue, float.MinValue, double.MinValue)]
