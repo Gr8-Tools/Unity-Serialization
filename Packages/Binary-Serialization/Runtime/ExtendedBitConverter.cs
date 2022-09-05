@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using BinarySerialization.Extensions;
+using UnityEngine;
 
 namespace BinarySerialization {
     public static class ExtendedBitConverter{
@@ -19,6 +20,23 @@ namespace BinarySerialization {
 
             var encodedBytes = Encoding.UTF8.GetBytes(value, 0, value.Length, target, offset);
             offset += encodedBytes;
+        }
+
+        /// <summary>
+        /// Write value <paramref name="value"/> of type '<see cref="Color"/>' into byte-array <paramref name="target"/> starting with <paramref name="offset"/> position
+        /// <para>Offset is increased with required size</para>
+        /// <para>It uses 1 byte for one Color-param (rgba) </para>
+        /// </summary>
+        public static void Serialize(in Color color, byte[] target, ref int offset) {
+            const int length = 4;
+            if (length + offset > target.Length) {
+                throw new ArgumentOutOfRangeException(nameof(target),
+                                                      $"Invalid size of buffer: require {length} bytes starting from {offset} index, but length is only '{target.Length}'");
+            }
+
+            for (int i = 0; i < length; i++) {
+                target[offset++] = (byte)Math.Round(color[i] * byte.MaxValue);
+            }
         }
 
 #endregion
@@ -49,6 +67,28 @@ namespace BinarySerialization {
 
             value = Encoding.UTF8.GetString(source, offset, length);
             offset += length;
+        }
+        
+        /// <summary>
+        /// Read value <paramref name="value"/> of type '<see cref="Color"/>' from byte-array <paramref name="source"/> starting with <paramref name="offset"/> position
+        /// <para>Offset is increased with required size</para>
+        /// /// <para>It uses 1 byte for one Color-param (rgba) </para>
+        /// </summary>
+        public static void Deserialize(this byte[] source, ref int offset, out Color value) {
+            if (source == null) {
+                throw new ArgumentOutOfRangeException(nameof(source));
+            }
+
+            const int length = 4;
+            if (length + offset > source.Length) {
+                throw new ArgumentOutOfRangeException(nameof(source),
+                                                      $"Invalid size of buffer: require {length} bytes starting from {offset} index, but length is only '{source.Length}'");
+            }
+
+            value = new Color();
+            for (int i = 0; i < length; i++) {
+                value[i] = source[offset++] / 255f;
+            }
         }
 
 #endregion
